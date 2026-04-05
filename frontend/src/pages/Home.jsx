@@ -5,6 +5,7 @@ import { FaGooglePlay, FaArrowRight } from "react-icons/fa";
 import ai from '../assets/ai.png'
 import ai1 from '../assets/SearchAi.png'
 import Logos from '../component/Logos';
+import ExploreCourses from '../component/ExploreCourses';
 
 export default function Home() {
   return (
@@ -66,6 +67,7 @@ export default function Home() {
 
       <div className="py-12 bg-white">
         <Logos/>
+        <ExploreCourses/>
       </div>
 
     </div>
