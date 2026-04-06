@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import './App.css'
+
 import Home from './pages/Home'
 import SignUp from './pages/SignUp'
 import Login from './pages/Login'
@@ -8,48 +9,61 @@ import ForgetPassword from './pages/forgetPassword'
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import { serverUrl } from './services/api';
-
 import useGetCurrentUser from './customHooks/getCurrentUser'
+
+// User Pages
 import Profile from './pages/Profile'
 import EditProfile from './pages/EditProfile'
-import Dashboard from './pages/Dashboard'
+
+// Educator Pages
+import Dashboard from './pages/Educator/Dashboard'
+import Courses from './pages/Educator/Courses'
+import CreateCourses from './pages/Educator/CreateCourses'
+import EditCourse from './pages/Educator/EditCourse'
+
+// Route Protection
 import ProtectedRoute from './components/ProtectedRoute'
 import PublicRoute from './components/PublicRoute'
 
 function App() {
 
+  // ✅ sirf call kar rahe hain (crash avoid)
   useGetCurrentUser()
 
   return (
     <>
-      {/* ✅ TOASTIFY */}
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        theme="light"
-      />
+      {/* Toast */}
+      <ToastContainer position="top-right" autoClose={3000} theme="light" />
 
       <Routes>
-        {/* Public Routes (Accessible only to non-logged-in users) */}
+
+        {/* 🔓 Public Routes */}
         <Route element={<PublicRoute />}>
           <Route path='/signup' element={<SignUp />} />
           <Route path='/login' element={<Login />} />
           <Route path='/forget' element={<ForgetPassword />} />
         </Route>
 
-        {/* Protected Routes (Accessible only to logged-in users) */}
+        {/* 🔐 Protected Routes */}
         <Route element={<ProtectedRoute />}>
+
           <Route path='/profile' element={<Profile />} />
           <Route path='/editprofile' element={<EditProfile />} />
+
+          {/* ✅ DIRECT ACCESS (no role check now) */}
           <Route path='/dashboard' element={<Dashboard />} />
+          <Route path='/courses' element={<Courses />} />
+          <Route path='/create-course' element={<CreateCourses />} />
+          <Route path='/edit-course/:id' element={<EditCourse />} />
+
         </Route>
 
-        {/* Home - Accessible to everyone */}
+        {/* 🏠 Home */}
         <Route path='/' element={<Home />} />
 
-        {/* Catch-all */}
+        {/* ❌ Catch */}
         <Route path='*' element={<Navigate to="/" />} />
+
       </Routes>
     </>
   )

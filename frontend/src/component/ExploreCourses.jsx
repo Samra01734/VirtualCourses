@@ -2,13 +2,14 @@ import React, { useEffect, useRef } from 'react'
 import {
   FaArrowRight,
   FaLaptopCode,
-  FaUserGraduate,
-  FaBookOpen,
-  FaCertificate,
-  FaChalkboardTeacher,
-  FaGlobe,
-  FaClock,
-  FaProjectDiagram
+  FaMobileAlt,
+  FaBrain,
+  FaRobot,
+  FaDatabase,
+  FaPaintBrush,
+  FaShieldAlt,
+  FaCloud,
+  FaGamepad
 } from 'react-icons/fa'
 
 function ExploreCourses() {
@@ -24,7 +25,9 @@ function ExploreCourses() {
   // 🧊 3D TILT
   useEffect(() => {
     cardsRef.current.forEach((card) => {
-      card.addEventListener("mousemove", (e) => {
+      if (!card) return
+
+      const handleMove = (e) => {
         const rect = card.getBoundingClientRect()
         const x = e.clientX - rect.left
         const y = e.clientY - rect.top
@@ -33,42 +36,61 @@ function ExploreCourses() {
         const rotateY = (rect.width / 2 - x) / 15
 
         card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`
-      })
+      }
 
-      card.addEventListener("mouseleave", () => {
+      const handleLeave = () => {
         card.style.transform = `rotateX(0deg) rotateY(0deg) scale(1)`
-      })
+      }
+
+      card.addEventListener("mousemove", handleMove)
+      card.addEventListener("mouseleave", handleLeave)
+
+      return () => {
+        card.removeEventListener("mousemove", handleMove)
+        card.removeEventListener("mouseleave", handleLeave)
+      }
     })
   }, [])
 
   // 🧲 Magnetic Button
   useEffect(() => {
     const btn = btnRef.current
+    if (!btn) return
 
-    btn.addEventListener("mousemove", (e) => {
+    const handleMove = (e) => {
       const rect = btn.getBoundingClientRect()
       const x = e.clientX - rect.left - rect.width / 2
       const y = e.clientY - rect.top - rect.height / 2
 
       btn.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`
-    })
+    }
 
-    btn.addEventListener("mouseleave", () => {
+    const handleLeave = () => {
       btn.style.transform = "translate(0,0)"
-    })
+    }
+
+    btn.addEventListener("mousemove", handleMove)
+    btn.addEventListener("mouseleave", handleLeave)
+
+    return () => {
+      btn.removeEventListener("mousemove", handleMove)
+      btn.removeEventListener("mouseleave", handleLeave)
+    }
   }, [])
 
   return (
-    <div className="bg-[#f6f6f7] relative overflow-hidden">
+    <div className="bg-gradient-to-br from-[#f6f6f7] via-white to-[#f3e8ff] relative overflow-hidden">
 
-      {/* 🧊 Noise Texture */}
-      <div className="absolute inset-0 opacity-[0.04] pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
+      {/* ✨ Background Glow */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-0 left-0 w-[300px] h-[300px] bg-purple-400/20 rounded-full blur-[120px]" />
+        <div className="absolute bottom-0 right-0 w-[300px] h-[300px] bg-pink-400/20 rounded-full blur-[120px]" />
+      </div>
 
       <div className="relative z-10 w-full min-h-[90vh] flex flex-col lg:flex-row items-center gap-12 px-[20px] md:px-[60px] py-[100px]">
 
         {/* LEFT */}
         <div className="w-full lg:w-[45%]">
-
           <div className="bg-white/70 backdrop-blur-xl rounded-2xl p-8 shadow-xl border border-gray-200">
 
             <h2 className="text-gray-500 mb-3">Discover Top Courses</h2>
@@ -93,22 +115,21 @@ function ExploreCourses() {
             </button>
 
           </div>
-
         </div>
 
         {/* RIGHT */}
         <div className="w-full lg:w-[55%] grid grid-cols-2 md:grid-cols-3 gap-6 perspective-[1000px]">
 
           {[
-            { icon: <FaLaptopCode />, title: "Development" },
-            { icon: <FaUserGraduate />, title: "Mentorship" },
-            { icon: <FaBookOpen />, title: "Courses" },
-            { icon: <FaCertificate />, title: "Certificates" },
-            { icon: <FaChalkboardTeacher />, title: "Teachers" },
-            { icon: <FaGlobe />, title: "Global" },
-            { icon: <FaClock />, title: "Flexible" },
-            { icon: <FaProjectDiagram />, title: "Projects" },
-            { icon: <FaLaptopCode />, title: "Advanced" }
+            { icon: <FaLaptopCode />, title: "Web Development" },
+            { icon: <FaMobileAlt />, title: "App Development" },
+            { icon: <FaBrain />, title: "Artificial Intelligence" },
+            { icon: <FaRobot />, title: "Machine Learning" },
+            { icon: <FaDatabase />, title: "Data Science" },
+            { icon: <FaPaintBrush />, title: "Graphics Design" },
+            { icon: <FaShieldAlt />, title: "Cyber Security" },
+            { icon: <FaCloud />, title: "Cloud Computing" },
+            { icon: <FaGamepad />, title: "Game Development" }
           ].map((item, i) => (
 
             <div
@@ -117,7 +138,7 @@ function ExploreCourses() {
               className="group relative bg-white/70 backdrop-blur-xl rounded-xl p-6 flex flex-col items-center text-center gap-3 border border-gray-200 shadow-md transition duration-300 cursor-pointer overflow-hidden"
             >
 
-              {/* 🎨 Gradient Hover Fill */}
+              {/* Hover Effect */}
               <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-gradient-to-br from-purple-500/10 to-pink-500/10 transition duration-300"></div>
 
               <div className="relative z-10">
