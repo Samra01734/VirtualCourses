@@ -1,5 +1,6 @@
 import express  from 'express'
-import { createcourse, editCourses, getCourseById, getCreatorCourses, removeCourse } from '../controllers/courseController'
+import { createcourse, editCourses, getCourseById, getCreatorCourses, removeCourse,getPublishedCourses }
+ from '../controllers/courseController.js'
 import isAuth  from '../middleware/isAuth.js'
 import upload from '../middleware/multer.js'
 const  courseRouter=express.Router()
@@ -12,3 +13,5 @@ courseRouter.post("/editcourse/:courseId",isAuth, upload.single
 )
 courseRouter.get("/getcoursebyid/:courseId",isAuth,getCourseById)
 courseRouter.delete("/remove/:courseId",isAuth,removeCourse)
+
+export default courseRouter

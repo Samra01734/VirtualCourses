@@ -1,52 +1,72 @@
-import mongoose from "mongoose"
+import mongoose from "mongoose";
 
-const courseSchema=new mongoose.Schema({
-    title:{
-        type:String,
-        required:true
+const courseSchema = new mongoose.Schema(
+  {
+    title: {
+      type: String,
+      required: true,
+      trim: true
     },
-    subTitle:{
-        type:String
+    subTitle: {
+      type: String,
+      trim: true
     },
-    description:{
-        type:String
+    description: {
+      type: String,
+      trim: true
     },
-    category:{
-        type:String,
-        required:true
+    category: {
+      type: String,
+      required: true
     },
-    level:{
-        type:String,
-        enum:["Beginner","Intermediate", "Advance"]
+    level: {
+      type: String,
+      enum: ["Beginner", "Intermediate", "Advance"]
     },
-      Price:{
-        type:Number
+    price: {
+      type: Number,
+      default: 0
     },
-      thumbnail:{
-        type:String
+    thumbnail: {
+      type: String
     },
-      enrolledStudents:[{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"User"
-    }],
-    lectures:[{
-         type:mongoose.Schema.Types.ObjectId,
-        ref:"Lecture"   
-    }],
-    creator:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"Lecture"    
-    },
-    isPublished:{
-        type:Boolean,
-        default:false
-    },
-    reviews:[{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"Review" 
-    }]
 
-},{timestamps:true})
+    // 👇 Relations
+    enrolledStudents: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+      }
+    ],
 
-const Course=mongoose.model("Course","courseSchema")
-export default Course
+    lectures: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Lecture"
+      }
+    ],
+
+    creator: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User"
+    },
+
+    isPublished: {
+      type: Boolean,
+      default: false
+    },
+
+    reviews: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Review"
+      }
+    ]
+  },
+  { timestamps: true }
+);
+
+// ✅ MODEL (IMPORTANT FIX)
+const Course = mongoose.model("Course", courseSchema);
+
+export default Course;

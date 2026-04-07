@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
-import { BiArrowBack } from 'react-icons/bi'
+import { BiArrowBack, BiClipboard } from 'react-icons/bi'
 import { useNavigate } from 'react-router-dom'
+import axios from 'axios'   // ✅ fixed
+import { toast } from 'react-toastify'   // ✅ add this
 
 function CreateCourses() {
   const navigate = useNavigate()
@@ -23,26 +25,27 @@ function CreateCourses() {
   ]
 
   // ✅ Submit Handler
-  const handleSubmit = (e) => {
-    e.preventDefault()
-
-    if (!title || !category) {
-      alert("Please fill all fields")
-      return
-    }
-
+  const handleCreateCourse = async () => {   // ✅ fixed name
     setLoading(true)
+    try {
+      const result = await axios.post(
+        serverUrl + "/api/course/create",
+        { title, category },
+        { withCredentials: true }
+      )
 
-    // 👉 API call yahan hogi
-    console.log({
-      title,
-      category
-    })
+      console.log(result.data)
+      toast.success("Course Created")   // ✅ fixed
 
-    setTimeout(() => {
+      setTitle("")       // ✅ optional reset
+      setCategory("")
       setLoading(false)
-      navigate("/courses")
-    }, 1000)
+
+    } catch (error) {
+      console.log(error)
+      toast.error(error?.response?.data?.message || "Something went wrong")
+      setLoading(false)
+    }
   }
 
   return (
@@ -60,7 +63,7 @@ function CreateCourses() {
           Create Course
         </h2>
 
-        <form onSubmit={handleSubmit} className='space-y-5'>
+        <form onSubmit={(e) => e.preventDefault()} className='space-y-5'>
 
           {/* Title */}
           <div>
@@ -77,7 +80,7 @@ function CreateCourses() {
             />
           </div>
 
-          {/* Category Select */}
+          {/* Category */}
           <div>
             <label className='text-sm font-medium text-gray-700'>
               Category
@@ -97,7 +100,7 @@ function CreateCourses() {
             </select>
           </div>
 
-          {/* 📊 Selected Data Preview */}
+          {/* Preview */}
           {(title || category) && (
             <div className='bg-gray-100 rounded-md p-3 text-sm'>
               <p><strong>Title:</strong> {title || "—"}</p>
@@ -109,9 +112,12 @@ function CreateCourses() {
           <button
             type='submit'
             disabled={loading}
+            onClick={handleCreateCourse}
             className='w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-2 rounded-md hover:opacity-90'
           >
-            {loading ? "Creating..." : "Create Course"}
+            {loading
+              ? <BiClipboard size={30} color='white' />
+              : "Create Course"}
           </button>
 
         </form>
