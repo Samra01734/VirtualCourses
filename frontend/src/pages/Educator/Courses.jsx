@@ -7,14 +7,12 @@ import {
   FaBookOpen
 } from 'react-icons/fa'
 import { BiEdit } from 'react-icons/bi'
+import { useSelector } from 'react-redux'
 
 function Courses() {
   const navigate = useNavigate()
 
-  const courses = [
-    { id: 1, title: "React Basics", students: 120 },
-    { id: 2, title: "Node JS API", students: 80 }
-  ]
+  const {creatorCourseData}=useSelector(state=>state.course)
 
   return (
     <div className='min-h-screen bg-gradient-to-br from-[#f6f6f7] via-white to-[#f3e8ff] p-6'>
@@ -60,7 +58,9 @@ function Courses() {
           </thead>
 
           <tbody>
-            <tr className='border-b hover:bg-gray-50 transition duration-200'>
+            {creatorCourseData?.map((course,index)=>(
+
+            <tr key={index} className='border-b hover:bg-gray-50 transition duration-200'>
 
               <td className='py-3 px-4'>
                 <div className='flex items-center gap-4'>
@@ -82,6 +82,8 @@ function Courses() {
               </td>
 
             </tr>
+                        ))}
+
           </tbody>
         </table>
 

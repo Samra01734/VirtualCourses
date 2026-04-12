@@ -24,11 +24,13 @@ import EditCourse from './pages/Educator/EditCourse'
 // Route Protection
 import ProtectedRoute from './components/ProtectedRoute'
 import PublicRoute from './components/PublicRoute'
+import getCreatorCourse from './customHooks/getCreatorCourse'
 
 function App() {
 
   // ✅ sirf call kar rahe hain (crash avoid)
   useGetCurrentUser()
+  getCreatorCourse()
 
   return (
     <>
