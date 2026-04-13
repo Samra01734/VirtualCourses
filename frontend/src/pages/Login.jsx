@@ -20,6 +20,11 @@ function Login() {
   const dispatch = useDispatch()
 
   const handleLogin = async () => {
+    if (!email || !password) {
+      toast.error("Please fill all fields")
+      return;
+    }
+
     setLoading(true)
 
     try {
@@ -28,21 +33,29 @@ function Login() {
         password
       })
 
-      // 🔥 IMPORTANT FIX (TOKEN SAVE)
-      localStorage.setItem("token", result.data.token)
+      // ✅ SAFE RESPONSE CHECK
+      if (result.data?.token) {
+        localStorage.setItem("token", result.data.token)  // 🔥 IMPORTANT FIX
+      }
 
-      // redux update
       dispatch(setUserData(result.data))
 
-      toast.success("Login Successfully")
+      toast.success("Login Successful")
 
-      setLoading(false)
+      setEmail("")
+      setPassword("")
+
       navigate("/")
 
     } catch (error) {
       console.log(error)
+
+      toast.error(
+        error.response?.data?.message || "Login failed"
+      )
+
+    } finally {
       setLoading(false)
-      toast.error(error.response?.data?.message || "Login failed")
     }
   }
 
@@ -52,7 +65,10 @@ function Login() {
 
       <form
         className='w-full max-w-[1000px] h-auto md:h-[600px] bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 rounded-3xl flex overflow-hidden z-10'
-        onSubmit={(e) => { e.preventDefault(); handleLogin(); }}
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleLogin();
+        }}
       >
 
         {/* LEFT SIDE */}
@@ -72,8 +88,8 @@ function Login() {
               type='email'
               placeholder='Enter your email'
               className='w-full mt-2 px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500'
-              onChange={(e) => setEmail(e.target.value)}
               value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
 
@@ -86,12 +102,12 @@ function Login() {
                 type={show ? "text" : "password"}
                 placeholder='••••••••'
                 className='w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500'
-                onChange={(e) => setPassword(e.target.value)}
                 value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
 
               <div
-                className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500"
+                className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer text-gray-400"
                 onClick={() => setShow(!show)}
               >
                 {show ? <FaRegEye /> : <FaRegEyeSlash />}
@@ -113,22 +129,22 @@ function Login() {
           <button
             type="submit"
             disabled={loading}
-            className='w-full py-3 bg-gray-900 text-white rounded-xl font-medium hover:bg-indigo-600 transition flex justify-center'
+            className='w-full py-3 bg-gray-900 hover:bg-indigo-600 text-white rounded-xl flex justify-center'
           >
-            {loading ? <ClockLoader size={20} color="white" /> : "Sign in"}
+            {loading ? <ClockLoader size={20} color='white' /> : "Sign in"}
           </button>
 
           {/* DIVIDER */}
-          <div className='flex items-center my-6'>
+          <div className='my-6 flex items-center gap-3'>
             <div className='flex-1 h-[1px] bg-gray-200'></div>
-            <span className='px-3 text-xs text-gray-400'>OR</span>
+            <span className='text-xs text-gray-400'>OR</span>
             <div className='flex-1 h-[1px] bg-gray-200'></div>
           </div>
 
           {/* GOOGLE */}
-          <div className='flex items-center justify-center border rounded-xl py-3 cursor-pointer hover:bg-gray-50'>
+          <div className='border p-3 rounded-xl flex items-center justify-center cursor-pointer hover:bg-gray-50'>
             <img src={google} className='w-5 h-5 mr-2' />
-            <span className='text-sm font-medium'>Continue with Google</span>
+            <span className='text-sm font-medium'>Google</span>
           </div>
 
           {/* SIGNUP */}
@@ -144,13 +160,21 @@ function Login() {
 
         </div>
 
-        {/* RIGHT SIDE */}
-        <div className='hidden md:flex w-1/2 bg-gradient-to-br from-gray-900 to-indigo-900 items-center justify-center flex-col text-white'>
-          <img src={logo} className='w-24 h-24 rounded-xl mb-5' />
-          <h2 className='text-2xl font-bold'>Virtual Courses</h2>
-          <p className='text-center mt-2 text-indigo-200 px-10'>
-            Learn anytime, anywhere with modern courses.
-          </p>
+        {/* RIGHT SIDE (UNCHANGED DESIGN) */}
+        <div className='hidden md:flex w-1/2 bg-gradient-to-br from-gray-900 via-indigo-900 to-purple-900 items-center justify-center flex-col relative overflow-hidden'>
+
+          <div className="absolute w-72 h-72 bg-purple-500 blur-3xl opacity-30"></div>
+
+          <div className="relative z-10 text-center p-10">
+            <img src={logo} className='w-24 h-24 mx-auto mb-5 rounded-xl' />
+            <h2 className='text-white text-3xl font-bold mb-3'>
+              Virtual Courses
+            </h2>
+            <p className='text-indigo-100'>
+              Learn anytime, anywhere with world-class education.
+            </p>
+          </div>
+
         </div>
 
       </form>

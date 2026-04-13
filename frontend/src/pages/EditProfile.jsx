@@ -2,19 +2,7 @@ import axios from 'axios';
 import React, { useState } from 'react'
 import { FaLongArrowAltLeft } from "react-icons/fa";
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from "react-router-dom";
-import api from '../services/api';
-import { setUserData } from '../redux/userSlice';
-import { ClipLoader } from 'react-spinners';
-import toast from "react-hot-toast"; // ✅ added
-
-const EditProfile = () => {
-  const navigate = useNavigate();
-  const { userData } = useSelector(state => state.user);
-
-  const [name, setName] = useState(userData.name || "")
-  const [description, setDescriptio] = useState(userData.description || "")
-  const [photoUrl, setPhotoUrl] = useState(null)
+import { hotoUrl, setPhotoUrl] = useState(null)
   const [loading, setLoading] = useState(false)
 
   const dispatch = useDispatch()
@@ -164,7 +152,19 @@ const EditProfile = () => {
           </button>
 
         </form>
-      </div>
+      </div>useNavigate } from "react-router-dom";
+import api from '../services/api';
+import { setUserData } from '../redux/userSlice';
+import { ClipLoader } from 'react-spinners';
+import toast from "react-hot-toast"; // ✅ added
+
+const EditProfile = () => {
+  const navigate = useNavigate();
+  const { userData } = useSelector(state => state.user);
+
+  const [name, setName] = useState(userData.name || "")
+  const [description, setDescriptio] = useState(userData.description || "")
+  const [p
     </div>
   )
 }

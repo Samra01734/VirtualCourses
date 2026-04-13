@@ -1,29 +1,34 @@
 import jwt from "jsonwebtoken";
 
-const isAuth = async (req, res, next) => {
+const isAuth = (req, res, next) => {
   try {
     // Get token from cookies OR Authorization header
-    let token =
-      req.cookies.token ||
+    const token =
+      req.cookies?.token ||
       (req.headers.authorization &&
-        req.headers.authorization.split(" ")[1]);
+        req.headers.authorization.startsWith("Bearer")
+        ? req.headers.authorization.split(" ")[1]
+        : null);
 
     if (!token) {
-      return res.status(401).json({ message: "No token" });
+      return res.status(401).json({ message: "No token provided" });
     }
 
     // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // ✅ FIX: standard way (IMPORTANT CHANGE)
+    // Attach user safely
     req.user = {
       id: decoded.id || decoded.userId,
     };
 
-    next();a
+    return next();
   } catch (error) {
     console.log("Auth Error:", error.message);
-    return res.status(401).json({ message: "Invalid Token" });
+
+    return res.status(401).json({
+      message: "Invalid or expired token",
+    });
   }
 };
 

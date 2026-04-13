@@ -17,19 +17,22 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         try {
           await connectDb();
 
-          const email = credentials.email;
-          const password = credentials.password;
+          const email = credentials?.email;
+          const password = credentials?.password;
+
+          if (!email || !password) return null;
 
           const user = await User.findOne({ email });
 
-          if (!user) {
-            throw new Error("User does not exist");
-          }
+          // ❌ FIX 1: NEVER return Error object
+          if (!user) return null;
 
-  const isMatch = await bcrypt.compare(password, user.password as string);  
-          if (!isMatch) {
-            throw new Error("Incorrect password");
-          }
+          const isMatch = await bcrypt.compare(
+            password,
+            user.password
+          );
+
+          if (!isMatch) return null;
 
           return {
             id: user._id.toString(),
@@ -38,7 +41,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             role: user.role,
           };
         } catch (error) {
-          console.log(error);
+          console.log("AUTH ERROR:", error);
           return null;
         }
       },
@@ -47,35 +50,38 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
   callbacks: {
     async jwt({ token, user }) {
-      // token me user ka data dalna
       if (user) {
         token.id = user.id;
         token.name = user.name;
         token.email = user.email;
         token.role = user.role;
       }
-
       return token;
     },
 
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.id as string;
-        session.user.name = token.name as string;
-        session.user.email = token.email as string;
-        session.user.role = token.role as string;
+        session.user.id = token.id;
+        session.user.name = token.name;
+        session.user.email = token.email;
+        session.user.role = token.role;
       }
-
       return session;
     },
   },
-  pages:{
-    signIn:"/login",
-    error:"/login"
+
+  pages: {
+    signIn: "/login",
+    error: "/login",
   },
-  session:{
-    strategy:"jwt",
-    maxAge:10*24*60*1000
+
+  session: {
+    strategy: "jwt",
+
+    // ❌ FIX 2: seconds not milliseconds
+    maxAge: 10 * 24 * 60 * 60,
   },
-  secret:process.env.AUTH_SECRET
+
+  // recommended fallback
+  secret: process.env.AUTH_SECRET,
 });

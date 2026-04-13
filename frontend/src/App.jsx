@@ -30,7 +30,7 @@ function App() {
 
   // ✅ sirf call kar rahe hain (crash avoid)
   useGetCurrentUser()
-  getCreatorCourse()
+getCreatorCourse()
 
   return (
     <>
@@ -67,6 +67,7 @@ function App() {
         <Route path='*' element={<Navigate to="/" />} />
 
       </Routes>
+      
     </>
   )
 }
